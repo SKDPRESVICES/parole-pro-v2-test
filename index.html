@@ -758,6 +758,22 @@ async function verifierEligibiliteAttestation() {
   }
 }
 
+// ACTUALISER LE BOUTON DE TÉLÉCHARGEMENT DE L'ATTESTATION
+async function actualiserBoutonAttestation() {
+  const bouton = document.getElementById("telecharger-attestation");
+  const message = document.getElementById("message-attestation");
+
+  if (!bouton || !message) return;
+
+  bouton.disabled = true;
+  message.textContent = "Vérification de votre éligibilité...";
+
+  const resultat = await verifierEligibiliteAttestation();
+
+  bouton.disabled = !resultat.autorise;
+  message.textContent = resultat.message;
+}
+
 // VALIDER UNE LEÇON ET PASSER À LA SUIVANTE
 async function validerLeconEtContinuer(moduleId, numeroLecon, prochaineLecon) {
 
