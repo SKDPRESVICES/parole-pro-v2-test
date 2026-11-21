@@ -1372,14 +1372,17 @@ sauvegarderProgression(1, index + 1, false);
         </button>
       ` : ""}
 
-      ${index < 3 ? `
-        <button class="btn" type="button"
-          onclick="afficherLecon(${index + 1})">
-          Leçon suivante
-        </button>
-      ` : `
-        <p><strong>Bravo ! Vous avez terminé les quatre leçons.</strong></p>
-      `}
+     ${index < 3 ? `
+  <button class="btn" type="button"
+    onclick="validerLeconEtContinuer(1, ${index + 1}, ${index + 1})">
+    Leçon suivante
+  </button>
+` : `
+  <button class="btn" type="button"
+    onclick="validerLeconEtContinuer(1, 4, null)">
+    Terminer le module
+  </button>
+`}
 
     </div>
 
