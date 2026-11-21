@@ -637,18 +637,50 @@ async function sauvegarderProgression(moduleId, numeroLecon, leconTerminee = fal
           onConflict: "user_id,module_id"
         });
 
-    if (sauvegardeError) throw sauvegardeError;
+   if (sauvegardeError) throw sauvegardeError;
 
-    console.log("Progression sauvegardée.");
+console.log("Progression sauvegardée.");
 
+return true;
   } catch (error) {
 
     console.error("Erreur de sauvegarde :", error);
-
+   return false;
   }
 
 }
+// VALIDER UNE LEÇON ET PASSER À LA SUIVANTE
+async function validerLeconEtContinuer(moduleId, numeroLecon, prochaineLecon) {
 
+  const sauvegardeReussie =
+    await sauvegarderProgression(moduleId, numeroLecon, true);
+
+  if (sauvegardeReussie !== true) {
+    alert("Impossible d'enregistrer cette leçon. Veuillez réessayer.");
+    return;
+  }
+
+  if (prochaineLecon === null) {
+    alert("Bravo ! Vous avez terminé les quatre leçons de ce module.");
+    return;
+  }
+
+  const fonctionsAffichage = {
+    1: afficherLecon,
+    2: afficherLeconModule02,
+    3: afficherLeconModule03,
+    4: afficherLeconModule04
+  };
+
+  const afficher = fonctionsAffichage[moduleId];
+
+  if (!afficher) {
+    alert("Module non reconnu.");
+    return;
+  }
+
+  afficher(prochaineLecon);
+}
 
 // GENERATEUR DE TRAME
 document.getElementById("generer").addEventListener("click", function () {
