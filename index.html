@@ -447,10 +447,38 @@ footer {
   <button class="btn" type="button" onclick="ouvrirModule(4)">
     Ouvrir le module
   </button>
+
 </div>
 
+<!-- MON ATTESTATION -->
+<div class="panel" id="espace-attestation">
 
-  <p class="message" id="message-tableau" role="status"></p>
+  <h3>Mon attestation</h3>
+
+  <p>
+    Votre attestation sera disponible après validation
+    des 16 leçons et vérification de votre situation financière.
+  </p>
+
+  <button
+    class="btn"
+    id="telecharger-attestation"
+    type="button"
+    disabled
+  >
+    Télécharger mon attestation
+  </button>
+
+  <p
+    class="message"
+    id="message-attestation"
+    role="status"
+  ></p>
+
+</div>
+
+<p class="message" id="message-tableau" role="status"></p>
+
 <!-- ESPACE DE COURS -->
 
 <div id="espace-cours" class="panel" hidden>
