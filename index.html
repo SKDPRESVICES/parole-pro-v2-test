@@ -2018,15 +2018,17 @@ sauvegarderProgression(4, index + 1, false);
         </button>
       ` : ""}
 
-      ${index < 3 ? `
-        <button class="btn" type="button"
-          onclick="afficherLeconModule04(${index + 1})">
-          Leçon suivante
-        </button>
-      ` : `
-        <p><strong>Bravo ! Vous avez terminé les quatre leçons du Module 04.</strong></p>
-      `}
-
+     ${index < 3 ? `
+  <button class="btn" type="button"
+    onclick="validerLeconEtContinuer(4, ${index + 1}, ${index + 1})">
+    Leçon suivante
+  </button>
+` : `
+  <button class="btn" type="button"
+    onclick="validerLeconEtContinuer(4, 4, null)">
+    Terminer le module
+  </button>
+`}
     </div>
 
   `;
