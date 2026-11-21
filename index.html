@@ -677,6 +677,87 @@ return true;
   }
 
 }
+  
+// VÉRIFIER SI L'APPRENANT PEUT TÉLÉCHARGER SON ATTESTATION
+async function verifierEligibiliteAttestation() {
+  try {
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const session = sessionData.session;
+
+    if (!session) {
+      return {
+        autorise: false,
+        message: "Veuillez vous connecter."
+      };
+    }
+
+    const userId = session.user.id;
+
+    const { data: progression, error: progressionError } =
+      await supabaseClient
+        .from("MODULE_PROGRESS")
+        .select("module_id, completed_lessons")
+        .eq("user_id", userId);
+
+    if (progressionError) throw progressionError;
+
+    for (let moduleId = 1; moduleId <= 4; moduleId++) {
+      const module = progression?.find(
+        item => item.module_id === moduleId
+      );
+
+      const lecons = module?.completed_lessons || [];
+
+      if (![0, 1, 2, 3].every(
+        numero => lecons.includes(numero)
+      )) {
+        return {
+          autorise: false,
+          message: "Vous devez terminer les 16 leçons avant de télécharger votre attestation."
+        };
+      }
+    }
+
+    const { data: droits, error: droitsError } =
+      await supabaseClient
+        .from("admin_droits_acces")
+        .select("modules_accessibles, retard, acces_suspendu")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (droitsError) throw droitsError;
+
+    if (
+      !droits ||
+      droits.modules_accessibles < 4 ||
+      droits.retard ||
+      droits.acces_suspendu
+    ) {
+      return {
+        autorise: false,
+        message: "Votre situation financière ne permet pas encore de télécharger votre attestation."
+      };
+    }
+
+    return {
+      autorise: true,
+      message: "Vous remplissez les conditions pour obtenir votre attestation."
+    };
+
+  } catch (error) {
+    console.error("Erreur de vérification :", error);
+
+    return {
+      autorise: false,
+      message: "Impossible de vérifier votre éligibilité. Veuillez réessayer."
+    };
+  }
+}
+
 // VALIDER UNE LEÇON ET PASSER À LA SUIVANTE
 async function validerLeconEtContinuer(moduleId, numeroLecon, prochaineLecon) {
 
