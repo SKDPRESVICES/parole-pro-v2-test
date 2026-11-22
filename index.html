@@ -775,6 +775,7 @@ async function actualiserBoutonAttestation() {
   message.textContent = resultat.message;
 }
 
+
 // DEMANDER ET TELECHARGER AUTOMATIQUEMENT SON ATTESTATION
 async function telechargerMonAttestation() {
   const bouton = document.getElementById("telecharger-attestation");
@@ -798,77 +799,134 @@ async function telechargerMonAttestation() {
       throw new Error("Aucune attestation n'a été retournée.");
     }
 
-    message.textContent =
-      "Attestation créée. Préparation du document PDF...";
-
     if (!window.jspdf || !window.jspdf.jsPDF) {
       throw new Error("Le générateur PDF n'est pas disponible.");
     }
 
+    message.textContent = "Chargement du logo officiel...";
+
+    // CHARGER LE LOGO OFFICIEL DEPUIS LE DÉPÔT TEST
+    const logo = new Image();
+
+    logo.src = encodeURI(
+      "Logo circulaire SKD bleu et or.png"
+    );
+
+    await new Promise((resolve, reject) => {
+      logo.onload = resolve;
+      logo.onerror = () =>
+        reject(new Error("Impossible de charger le logo officiel."));
+    });
+
     const { jsPDF } = window.jspdf;
+
     const pdf = new jsPDF({
       orientation: "landscape",
       unit: "mm",
       format: "a4"
     });
 
+    // CADRE EXTÉRIEUR
     pdf.setDrawColor(200, 164, 93);
     pdf.setLineWidth(2);
     pdf.rect(10, 10, 277, 190);
 
+    pdf.setDrawColor(16, 36, 61);
+    pdf.setLineWidth(0.5);
+    pdf.rect(14, 14, 269, 182);
+
+    // LOGO OFFICIEL
+    pdf.addImage(
+      logo,
+      "PNG",
+      130.5,
+      17,
+      36,
+      36
+    );
+
+    // TITRE
     pdf.setTextColor(16, 36, 61);
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(24);
-    pdf.text("SKD- PRÈSVICES", 148.5, 35, { align: "center" });
+    pdf.setFontSize(23);
 
-    pdf.setFontSize(25);
-    pdf.text("ATTESTATION DE FORMATION", 148.5, 65, {
-      align: "center"
-    });
+    pdf.text(
+      "ATTESTATION DE FORMATION",
+      148.5,
+      67,
+      { align: "center" }
+    );
 
+    // LIGNE DÉCORATIVE
+    pdf.setDrawColor(200, 164, 93);
+    pdf.setLineWidth(1);
+    pdf.line(85, 73, 212, 73);
+
+    // BÉNÉFICIAIRE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(16);
-    pdf.text("La présente attestation est délivrée à :", 148.5, 88, {
-      align: "center"
-    });
+
+    pdf.text(
+      "La présente attestation est délivrée à :",
+      148.5,
+      91,
+      { align: "center" }
+    );
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(22);
-    pdf.text(attestation.nom_beneficiaire, 148.5, 105, {
-      align: "center"
-    });
+    pdf.setFontSize(23);
+    pdf.setTextColor(16, 36, 61);
 
+    pdf.text(
+      attestation.nom_beneficiaire,
+      148.5,
+      109,
+      { align: "center" }
+    );
+
+    // FORMATION ET DURÉE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(15);
+
     pdf.text(
       "Pour avoir suivi la formation en prise de parole en public.",
       148.5,
-      125,
+      128,
       { align: "center" }
     );
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(15);
 
     pdf.text(
       "Durée : " + attestation.duree,
       148.5,
-      140,
+      142,
       { align: "center" }
     );
 
-    pdf.setFontSize(11);
+    // NUMÉRO ET DATE
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.setTextColor(16, 36, 61);
+
     pdf.text(
       "Numéro : " + attestation.numero_attestation,
       20,
-      175
+      180
     );
 
     pdf.text(
       "Date de délivrance : " + attestation.date_delivrance,
       267,
-      175,
+      180,
       { align: "right" }
     );
 
-    pdf.save("Attestation_" + attestation.numero_attestation + ".pdf");
+    // TÉLÉCHARGEMENT
+    pdf.save(
+      "Attestation_" + attestation.numero_attestation + ".pdf"
+    );
 
     message.textContent =
       "Votre attestation a été téléchargée avec succès.";
@@ -883,6 +941,7 @@ async function telechargerMonAttestation() {
     bouton.disabled = false;
   }
 }
+
 
 // VALIDER UNE LEÇON ET PASSER À LA SUIVANTE
 async function validerLeconEtContinuer(moduleId, numeroLecon, prochaineLecon) {
