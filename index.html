@@ -774,6 +774,115 @@ async function actualiserBoutonAttestation() {
   message.textContent = resultat.message;
 }
 
+// DEMANDER ET TELECHARGER AUTOMATIQUEMENT SON ATTESTATION
+async function telechargerMonAttestation() {
+  const bouton = document.getElementById("telecharger-attestation");
+  const message = document.getElementById("message-attestation");
+
+  if (!bouton || !message) return;
+
+  bouton.disabled = true;
+  message.textContent = "Préparation de votre attestation...";
+
+  try {
+    const { data, error } = await supabaseClient.rpc(
+      "delivrer_mon_attestation"
+    );
+
+    if (error) throw error;
+
+    const attestation = Array.isArray(data) ? data[0] : data;
+
+    if (!attestation) {
+      throw new Error("Aucune attestation n'a été retournée.");
+    }
+
+    message.textContent =
+      "Attestation créée. Préparation du document PDF...";
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      throw new Error("Le générateur PDF n'est pas disponible.");
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4"
+    });
+
+    pdf.setDrawColor(200, 164, 93);
+    pdf.setLineWidth(2);
+    pdf.rect(10, 10, 277, 190);
+
+    pdf.setTextColor(16, 36, 61);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(24);
+    pdf.text("SKD- PRÈSVICES", 148.5, 35, { align: "center" });
+
+    pdf.setFontSize(25);
+    pdf.text("ATTESTATION DE FORMATION", 148.5, 65, {
+      align: "center"
+    });
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(16);
+    pdf.text("La présente attestation est délivrée à :", 148.5, 88, {
+      align: "center"
+    });
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(22);
+    pdf.text(attestation.nom_beneficiaire, 148.5, 105, {
+      align: "center"
+    });
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(15);
+    pdf.text(
+      "Pour avoir suivi la formation en prise de parole en public.",
+      148.5,
+      125,
+      { align: "center" }
+    );
+
+    pdf.text(
+      "Durée : " + attestation.duree,
+      148.5,
+      140,
+      { align: "center" }
+    );
+
+    pdf.setFontSize(11);
+    pdf.text(
+      "Numéro : " + attestation.numero_attestation,
+      20,
+      175
+    );
+
+    pdf.text(
+      "Date de délivrance : " + attestation.date_delivrance,
+      267,
+      175,
+      { align: "right" }
+    );
+
+    pdf.save("Attestation_" + attestation.numero_attestation + ".pdf");
+
+    message.textContent =
+      "Votre attestation a été téléchargée avec succès.";
+
+  } catch (error) {
+    console.error("Erreur de délivrance de l'attestation :", error);
+
+    message.textContent =
+      error.message || "Impossible de télécharger votre attestation.";
+
+  } finally {
+    bouton.disabled = false;
+  }
+}
+
 // VALIDER UNE LEÇON ET PASSER À LA SUIVANTE
 async function validerLeconEtContinuer(moduleId, numeroLecon, prochaineLecon) {
 
