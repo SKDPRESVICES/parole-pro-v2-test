@@ -904,7 +904,17 @@ async function telechargerMonAttestation() {
       142,
       { align: "center" }
     );
+    // MENTION OFFICIELLE
+pdf.setFont("helvetica", "normal");
+pdf.setFontSize(12);
+pdf.setTextColor(16, 36, 61);
 
+pdf.text(
+  "En foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.",
+  148.5,
+  158,
+  { align: "center" }
+);
     // NUMÉRO ET DATE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(10);
