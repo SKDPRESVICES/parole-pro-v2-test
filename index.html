@@ -910,9 +910,16 @@ pdf.setFontSize(12);
 pdf.setTextColor(16, 36, 61);
 
 pdf.text(
-  "En foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.",
+  "En foi de quoi, la présente attestation lui est délivrée",
   148.5,
-  158,
+  156,
+  { align: "center" }
+);
+
+pdf.text(
+  "pour servir et valoir ce que de droit.",
+  148.5,
+  163,
   { align: "center" }
 );
     // NUMÉRO ET DATE
