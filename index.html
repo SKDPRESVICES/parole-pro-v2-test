@@ -961,6 +961,17 @@ pdf.text(
       { align: "center" }
     );
     
+    // ACTIVITÉ DE L'ORGANISATION
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(4);
+    pdf.setTextColor(16, 36, 61);
+    pdf.text(
+      "Formation et développement des compétences",
+      42,
+      178,
+      { align: "center", maxWidth: 25 }
+    );
+    
     // MENTION DIRECTION
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(5);
