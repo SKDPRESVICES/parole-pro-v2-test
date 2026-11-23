@@ -960,6 +960,18 @@ pdf.text(
       156,
       { align: "center" }
     );
+    
+    // MENTION DIRECTION
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(5);
+    pdf.setTextColor(16, 36, 61);
+    pdf.text(
+      "DIRECTION",
+      42,
+      158,
+      { align: "center" }
+    );
+
     // TÉLÉCHARGEMENT
     pdf.save(
       "Attestation_" + attestation.numero_attestation + ".pdf"
