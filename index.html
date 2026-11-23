@@ -915,6 +915,7 @@ pdf.text(
   151,
   { align: "center" }
 );
+    
     // NUMÉRO ET DATE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(10);
@@ -923,64 +924,32 @@ pdf.text(
     pdf.text(
       "Numéro : " + attestation.numero_attestation,
       20,
-    187
+      187
     );
 
     pdf.text(
       "Date de délivrance : " + attestation.date_delivrance,
       267,
-     187,
+      187,
       { align: "right" }
     );
-  
+
     // CACHET OFFICIEL SKD- PRÈSVICES
     pdf.setDrawColor(16, 36, 61);
     pdf.setLineWidth(0.8);
-    pdf.circle(42, 168, 15.5);
+    pdf.circle(42, 165, 15.5);
 
     pdf.setLineWidth(0.4);
-    pdf.circle(42, 168, 14);
-    
+    pdf.circle(42, 165, 14);
+
     // LOGO AU CENTRE DU CACHET
     pdf.addImage(
       logo,
       "PNG",
       34,
-      160,
+      157,
       16,
       16
-    );
-      // NOM DE L'ORGANISATION
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(6);
-    pdf.setTextColor(16, 36, 61);
-    pdf.text(
-      "SKD- PRÈSVICES",
-      42,
-      156,
-      { align: "center" }
-    );
-    
-    // ACTIVITÉ DE L'ORGANISATION
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(4);
-    pdf.setTextColor(16, 36, 61);
-    pdf.text(
-      "Formation et développement des compétences",
-      42,
-      178,
-      { align: "center", maxWidth: 25 }
-    );
-    
-    // PAYS
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(5);
-    pdf.setTextColor(16, 36, 61);
-    pdf.text(
-      "SÉNÉGAL",
-      42,
-      181,
-      { align: "center" }
     );
 
     // MENTION DIRECTION
@@ -990,7 +959,18 @@ pdf.text(
     pdf.text(
       "DIRECTION",
       42,
-      158,
+      175,
+      { align: "center" }
+    );
+
+    // PAYS
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(5);
+    pdf.setTextColor(16, 36, 61);
+    pdf.text(
+      "SÉNÉGAL",
+      42,
+      178,
       { align: "center" }
     );
 
