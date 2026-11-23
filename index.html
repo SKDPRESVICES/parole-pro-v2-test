@@ -803,20 +803,26 @@ async function telechargerMonAttestation() {
       throw new Error("Le générateur PDF n'est pas disponible.");
     }
 
-    message.textContent = "Chargement du logo officiel...";
+    // CHARGER LES IMAGES OFFICIELLES
+    message.textContent = "Chargement du logo et de la signature...";
 
-    // CHARGER LE LOGO OFFICIEL DEPUIS LE DÉPÔT TEST
-    const logo = new Image();
+    const chargerImage = (source, nom) => {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
 
-    logo.src = encodeURI(
-      "Logo circulaire SKD bleu et or.png"
-    );
+        image.onload = () => resolve(image);
 
-    await new Promise((resolve, reject) => {
-      logo.onload = resolve;
-      logo.onerror = () =>
-        reject(new Error("Impossible de charger le logo officiel."));
-    });
+        image.onerror = () =>
+          reject(new Error("Impossible de charger " + nom + "."));
+
+        image.src = encodeURI(source);
+      });
+    };
+
+    const [logo, signature] = await Promise.all([
+      chargerImage("Logo circulaire SKD bleu et or.png", "le logo officiel"),
+      chargerImage("signature_skd.png", "la signature officielle")
+    ]);
 
     const { jsPDF } = window.jspdf;
 
@@ -826,7 +832,7 @@ async function telechargerMonAttestation() {
       format: "a4"
     });
 
-    // CADRE EXTÉRIEUR
+    // CADRE EXTERIEUR
     pdf.setDrawColor(200, 164, 93);
     pdf.setLineWidth(2);
     pdf.rect(10, 10, 277, 190);
@@ -857,12 +863,12 @@ async function telechargerMonAttestation() {
       { align: "center" }
     );
 
-    // LIGNE DÉCORATIVE
+    // LIGNE DECORATIVE
     pdf.setDrawColor(200, 164, 93);
     pdf.setLineWidth(1);
     pdf.line(85, 73, 212, 73);
 
-    // BÉNÉFICIAIRE
+    // BENEFICIAIRE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(16);
 
@@ -884,16 +890,16 @@ async function telechargerMonAttestation() {
       { align: "center" }
     );
 
-    // FORMATION ET DURÉE
+    // FORMATION ET DUREE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(15);
 
-   pdf.text(
-  "Pour avoir suivi la formation en prise de parole en public.",
-  148.5,
-  128,
-  { align: "center" }
-);
+    pdf.text(
+      "Pour avoir suivi la formation en prise de parole en public.",
+      148.5,
+      128,
+      { align: "center" }
+    );
 
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(15);
@@ -904,19 +910,83 @@ async function telechargerMonAttestation() {
       142,
       { align: "center" }
     );
-   // MENTION OFFICIELLE
-pdf.setFont("helvetica", "normal");
-pdf.setFontSize(10);
-pdf.setTextColor(16, 36, 61);
 
-pdf.text(
-  "En foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.",
-  148.5,
-  151,
-  { align: "center" }
-);
-    
-    // NUMÉRO ET DATE
+    // MENTION OFFICIELLE
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.setTextColor(16, 36, 61);
+
+    pdf.text(
+      "En foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.",
+      148.5,
+      151,
+      { align: "center" }
+    );
+
+    // CACHET OFFICIEL SKD- PRÈSVICES
+    pdf.setDrawColor(16, 36, 61);
+    pdf.setLineWidth(0.8);
+    pdf.circle(42, 165, 15.5);
+
+    pdf.setLineWidth(0.4);
+    pdf.circle(42, 165, 14);
+
+    // LOGO AGRANDI AU CENTRE DU CACHET
+    pdf.addImage(
+      logo,
+      "PNG",
+      32.5,
+      153,
+      19,
+      19
+    );
+
+    // MENTION DIRECTION
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(6);
+    pdf.setTextColor(16, 36, 61);
+
+    pdf.text(
+      "DIRECTION",
+      42,
+      175.5,
+      { align: "center" }
+    );
+
+    // PAYS
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(5.5);
+
+    pdf.text(
+      "SÉNÉGAL",
+      42,
+      178.5,
+      { align: "center" }
+    );
+
+    // SIGNATURE OFFICIELLE EN BAS A DROITE
+    pdf.addImage(
+      signature,
+      "PNG",
+      236,
+      157,
+      34,
+      17.65
+    );
+
+    // MENTION LA DIRECTION
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    pdf.setTextColor(16, 36, 61);
+
+    pdf.text(
+      "La Direction",
+      253,
+      181,
+      { align: "center" }
+    );
+
+    // NUMERO ET DATE
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(10);
     pdf.setTextColor(16, 36, 61);
@@ -934,47 +1004,7 @@ pdf.text(
       { align: "right" }
     );
 
-    // CACHET OFFICIEL SKD- PRÈSVICES
-    pdf.setDrawColor(16, 36, 61);
-    pdf.setLineWidth(0.8);
-    pdf.circle(42, 165, 15.5);
-
-    pdf.setLineWidth(0.4);
-    pdf.circle(42, 165, 14);
-
-    // LOGO AU CENTRE DU CACHET
-    pdf.addImage(
-      logo,
-      "PNG",
-      34,
-      157,
-      16,
-      16
-    );
-
-    // MENTION DIRECTION
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(5);
-    pdf.setTextColor(16, 36, 61);
-    pdf.text(
-      "DIRECTION",
-      42,
-      175,
-      { align: "center" }
-    );
-
-    // PAYS
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(5);
-    pdf.setTextColor(16, 36, 61);
-    pdf.text(
-      "SÉNÉGAL",
-      42,
-      178,
-      { align: "center" }
-    );
-
-    // TÉLÉCHARGEMENT
+    // TELECHARGEMENT
     pdf.save(
       "Attestation_" + attestation.numero_attestation + ".pdf"
     );
@@ -993,8 +1023,6 @@ pdf.text(
   }
 }
 
-
-// VALIDER UNE LEÇON ET PASSER À LA SUIVANTE
 async function validerLeconEtContinuer(moduleId, numeroLecon, prochaineLecon) {
 
   const sauvegardeReussie =
