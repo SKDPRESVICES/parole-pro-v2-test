@@ -940,6 +940,16 @@ pdf.text(
 
     pdf.setLineWidth(0.4);
     pdf.circle(42, 168, 14);
+    
+    // LOGO AU CENTRE DU CACHET
+    pdf.addImage(
+      logo,
+      "PNG",
+      34,
+      160,
+      16,
+      16
+    );
 
     // TÉLÉCHARGEMENT
     pdf.save(
