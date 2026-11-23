@@ -950,7 +950,16 @@ pdf.text(
       16,
       16
     );
-
+      // NOM DE L'ORGANISATION
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(6);
+    pdf.setTextColor(16, 36, 61);
+    pdf.text(
+      "SKD- PRÈSVICES",
+      42,
+      156,
+      { align: "center" }
+    );
     // TÉLÉCHARGEMENT
     pdf.save(
       "Attestation_" + attestation.numero_attestation + ".pdf"
