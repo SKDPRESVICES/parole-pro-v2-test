@@ -1250,10 +1250,14 @@ async function chargerStatutPaiement(userId) {
 
   }
 }
+
 // INSCRIPTION
 document.getElementById("inscrire").addEventListener(
   "click", async function () {
     messageInscription.textContent = "";
+
+    const civilite =
+      document.getElementById("civilite").value;
 
     const nom =
       document.getElementById("nom").value.trim();
@@ -1264,7 +1268,7 @@ document.getElementById("inscrire").addEventListener(
     const password =
       document.getElementById("password-inscription").value;
 
-    if (!nom || !email || !password) {
+    if (!civilite || !nom || !email || !password) {
 
       messageInscription.textContent =
         "Veuillez remplir tous les champs.";
@@ -1296,10 +1300,11 @@ document.getElementById("inscrire").addEventListener(
           options: {
 
             emailRedirectTo:
-  "https://skdpresvices.github.io/parole-pro-v2-test/",
+              "https://skdpresvices.github.io/parole-pro-v2-test/",
 
             data: {
-              full_name: nom
+              full_name: nom,
+              civilite: civilite
             }
 
           }
